@@ -1,0 +1,1811 @@
+https://www.thestudentsuite.com/docs/competitions-api : for competitions
+
+StudentSuite
+Tools
+Mission
+Contribute
+Updates
+Docs
+GitHub
+
+DOCS/COMPETITIONS API
+Competitions API
+Read the competitions dataset programmatically: GET /api/competitions, filters, pagination, and errors.
+StudentSuite Team · 2026-09-06 · 4 min read
+GUIDES
+
+GitHub Student Developer Pack
+Finding Exam Centres
+Map Controls
+Using the Exam Calendar
+Using the Competitions Catalog
+Install & Offline Usage
+FAQ
+AWESOME LISTS
+
+Awesome Student Resources
+Awesome Study Resources
+Awesome Skills & Plugins
+CONTRIBUTING
+
+Contributing Places
+Data Sources & Provenance
+Place Data Format
+DEVELOPERS
+
+Architecture
+Places API
+Competitions API
+Self-Hosting Guide
+Troubleshooting
+Changelog
+Every competition StudyMap lists is hand-curated and committed to data/competitions/*.json - one file per category, including the real national qualifying pathways in country_tracks where one exists. The API below exposes that dataset read-only, mirroring the places API exactly, so anything can be built on top of it without cloning the repo.
+
+GET /api/competitions
+The merged dataset, optionally filtered, with bounded pagination.
+Copy
+# Everything (paginated at 50 rows)
+curl "https://studyymap.com/api/competitions"
+
+# Free, individual STEM competitions
+curl "https://studyymap.com/api/competitions?category=stem&participation=individual&fee=free"
+
+# Competitions with a real qualifying pathway for India
+curl "https://studyymap.com/api/competitions?country=IN"
+Responses are plain JSON with permissive CORS (Access-Control-Allow-Origin: *), so browser code can call it directly. Responses are cached for 6 hours (the dataset changes a few times a week at most) via Cache-Control headers.
+Query parameters
+All optional; every value is validated, and invalid values are a 400 with a message - never silently ignored.
+category (enum)
+One of the 15 competition categories (stem, mathematics, coding, essay_writing, and so on). Anything else is a 400.
+format (enum)
+One of `online`, `in_person`, `hybrid`.
+participation (enum)
+One of `individual`, `team`, `individual_or_team`.
+region (string)
+Matched exactly as stored: `"international"`, or an ISO-3166 alpha-2 code like `US`. Free-form, not a fixed enum, so it is not validated against a list - a region with no matches just returns an empty `data` array.
+country (enum)
+Matches `country_tracks[].country`: one of the 13 countries with a real qualifying pathway (IN, US, GB, CA, AU, SG, DE, FR, CN, JP, KR, BR, ZA). Unlike the places API, where `country` is rejected outright because that dataset has no such field, this filter genuinely works here.
+fee ("free")
+Only accepted value is `free`, which keeps competitions with a fee of zero. Any other value is a 400.
+age (non-negative integer)
+Kept only when the age falls within the competition's own age_min/age_max, inclusive at both ends.
+deadline_before (ISO date (YYYY-MM-DD))
+Keeps competitions with at least one `dates[]` entry of type `"deadline"` on or before this date.
+limit (positive integer)
+Default 50; values above the hard maximum of 200 are clamped, never dumped.
+offset (non-negative integer)
+Zero-based. Combine with `limit` to page through results.
+Response shape
+Each record is exactly one entry from data/competitions/*.json, as defined by the schema.
+Copy
+{
+  "data": [
+    {
+      "id": "breakthrough-junior-challenge",
+      "name": "Breakthrough Junior Challenge",
+      "organizer": "Breakthrough Prize Foundation",
+      "organizer_url": "https://breakthroughjuniorchallenge.org",
+      "category": "stem",
+      "subjects": ["physics", "science communication"],
+      "description": "One to three sentences, written by us.",
+      "format": "online",
+      "age_min": 13,
+      "age_max": 18,
+      "participation": "individual",
+      "region": "international",
+      "fee": { "amount": 0, "currency": "USD" },
+      "prize": "USD 250,000 scholarship plus a lab grant",
+      "official_url": "https://breakthroughjuniorchallenge.org",
+      "cycle_year": 2026,
+      "dates": [
+        {
+          "label": "Submission deadline",
+          "date": "2026-06-25",
+          "type": "deadline",
+          "timezone": "UTC-4",
+          "estimated": false,
+          "source_url": "https://breakthroughjuniorchallenge.org/rules"
+        }
+      ],
+      "added_by": "your-github-username"
+    }
+  ],
+  "total": 1,
+  "limit": 50,
+  "offset": 0
+}
+total is the number of matches before pagination, so consumers know the full result set size. The canonical record shape lives in data/competitions.schema.json.
+Errors
+Invalid filter values return 400 with an error message instead of being ignored.
+Copy
+{
+  "error": "unknown country \"ZZ\"; expected one of IN, US, GB, CA, AU, SG, DE, FR, CN, JP, KR, BR, ZA"
+}
+400 cases: an unknown category, format, participation, country, or fee value; a malformed age, deadline_before, limit, or offset; or a repeated parameter. A filter combination with no matches is an empty result, not an error.
+No API key, no write access
+This endpoint is read-only and deliberately unauthenticated - the dataset is public by design. To add or correct a competition, open a pull request against data/competitions/*.json following the competitions contributing guide.
+RELATED
+
+Architecture
+A map of the codebase for new contributors: folder layout, data flow, and key modules.
+Places API
+Read the crowdsourced places dataset programmatically: GET /api/places, filters, pagination, and errors.
+Self-Hosting Guide
+Run StudyMap for your own city: fork, configure your region and dataset, and deploy.
+Ready to use what you just read?
+Previous
+Places API
+Next
+Self-Hosting Guide
+
+StudentSuite
+Open-source tools that help students plan less and learn more.
+TOOLS
+StudyMap
+Skills & Plugins for Students
+Awesome Student Resources
+Awesome Study Resources
+ORG
+GitHub
+Repos
+Updates
+Contribute
+Mission
+Docs
+CONTACT
+Email
+GitHub
+Instagram
+MIT licensed · built by students, for students
+
+
+
+
+
+
+
+
+
+
+
+
+
+Devpost Hackathon Scraper
+
+Skip to content
+Apify logo
+
+Product
+Promotion image background
+Start here!
+Ready-to-run tools for your AI agents and apps. Just pick one and go.
+Browse 68,308 Actors
+Apify platform
+Apify Store
+Actors for any job on the web
+Actors
+Build and run serverless programs
+Integrations
+Connect with apps and services
+MCP
+Give your AI access to Actors
+Anti-blocking
+Anti-blocking
+Scrape without getting blocked
+Proxy
+Rotate scraper IP addresses
+Open source
+Crawlee
+Web scraping and crawling library
+
+Solutions
+Promotion image background
+MCP server configuration
+Configure your Apify MCP server with Actors and tools for seamless integration with MCP clients.
+Start building
+Apify for
+Enterprise
+Startups
+Universities
+Nonprofits
+Use cases
+Data for generative AI
+Data for AI agents
+Lead generation
+Market research
+View more →
+Consulting
+Professional services
+Apify Partners
+
+Developers
+Documentation
+Full reference for the Apify platform
+Get started
+Actor templates
+Python, JavaScript, and TypeScript
+Web scraping academy
+Courses for beginners and experts
+Monetize your code
+Publish your Actors and get paid
+Learn
+API reference
+CLI
+SDK
+MCP
+Crawlee
+Promotion image background
+Earn from your code
+$1.5M paid out last month. Many developers earn over $3k.
+Start earning now
+
+Resources
+Help and support
+Advice and answers about Apify
+Actor ideas
+Get inspired to build Actors
+Changelog
+See what’s new on Apify
+Customer stories
+Find out how others use Apify
+Company
+About Apify
+Contact us
+Blog
+Live events
+Doing Good
+Jobs
+We're hiring!
+Promotion image background
+Join our Discord
+Talk to other builders
+Pricing
+Contact sales
+Go to Console
+Devpost Hackathon Scraper avatar
+Devpost Hackathon Scraper
+Pricing
+from $0.60 / 1,000 hackathon extracteds
+Try for free
+List of Actors
+Devpost Hackathon Scraper
+Devpost Hackathon Scraper
+
+automation-lab/devpost-scraper
+Try for free
+
+Scrape hackathons, prizes, themes, deadlines, and organizers from Devpost — 13,000+ competitions. Filter by keyword, status, and challenge type. HTTP-only, no browser needed.
+Pricing
+from $0.60 / 1,000 hackathon extracteds
+Rating
+0.0
+(0)
+Developer
+Stas Persiianenko
+Stas Persiianenko
+Maintained by Community
+Actor stats
+0
+Bookmarked
+32
+Total users
+1
+Monthly active users
+18 days ago
+Last modified
+Categories
+AI
+Jobs
+Share
+README
+Input
+Pricing
+API
+Issues
+Changelog
+Tasks
+3
+What does it do?
+
+Devpost Hackathon Scraper extracts hackathon listings from Devpost — the world's largest hackathon platform with 13,000+ competitions and millions of participants. It uses Devpost's public API to collect structured data on each hackathon, including prizes, deadlines, themes, organizers, and registration counts — with no authentication required.
+
+Data extracted per hackathon:
+
+Field	Description
+id	Devpost hackathon ID
+title	Hackathon name
+url	Hackathon homepage URL
+organizationName	Organizing company or group
+location	"Online" or city/venue
+openState	Status: open, upcoming, ended
+submissionPeriodDates	Start and end date string
+timeLeftToSubmission	Human-readable countdown
+themes	Theme tags (e.g. Machine Learning/AI, Health)
+prizeAmount	Total prize pool (cleaned string)
+cashPrizesCount	Number of cash prizes
+otherPrizesCount	Number of non-cash prizes
+registrationsCount	Number of registered participants
+featured	Whether Devpost featured this hackathon
+winnersAnnounced	Whether winners have been revealed
+inviteOnly	Whether participation is invite-only
+thumbnailUrl	Hackathon banner image URL
+submissionGalleryUrl	Link to the project gallery
+Who is it for?
+
+🎓 Students and developers looking for hackathons
+
+Find competitions that match your skills, schedule, and interests. Filter by theme (AI, blockchain, health), format (online/in-person), and deadline to surface the best opportunities without manually browsing hundreds of listings.
+
+🏢 Developer relations and community teams
+
+Track hackathons in your domain to find sponsorship opportunities, recruit participants, or monitor the competitive landscape. Scrape by keyword or theme to get an instant market view of active competitions.
+
+📊 Researchers and analysts
+
+Study hackathon trends — prize amounts over time, popular themes, participation growth, and organizer activity. The API returns total registration counts, which serve as a proxy for developer community interest.
+
+🤖 Hackathon aggregators and apps
+
+Power a custom hackathon discovery app, newsletter, or Slack bot with fresh Devpost data without maintaining your own crawlers. The structured JSON output integrates directly with Zapier, Make, Airtable, or any webhook endpoint.
+
+Why use this actor?
+
+✅ No Playwright, no headless browser — uses Devpost's public JSON API for reliable, fast extraction
+✅ Rich filters — search by keyword, theme, format (online/in-person), and sort order
+✅ Pagination handled automatically — fetches all pages to meet your maxResults target
+✅ Clean output — prize amounts stripped of HTML tags, thumbnail URLs made absolute
+✅ 13,000+ hackathons — the full Devpost catalog is accessible
+✅ Cost-efficient — HTTP-only actor with 256 MB memory footprint
+How to use it
+
+Open the actor at https://apify.com/automation-lab/devpost-scraper
+Set your search filters — enter a keyword, choose a status (open, upcoming, ended), pick a challenge type, and set sort order
+Set maxResults — choose how many hackathons you need (default: 100)
+Click Start — the actor fetches data directly from the Devpost API
+Download results — export as JSON, CSV, Excel, or connect to integrations
+Input parameters
+
+Parameter	Type	Default	Description
+searchQuery	string	""	Keyword to search for (e.g. "AI", "blockchain", "health")
+challengeType	select	"all"	Filter by format: all, online, or in-person
+status	select	"open"	Filter by status: all, open, upcoming, or ended
+themes	array	[]	Filter by theme tags (e.g. ["Machine Learning/AI", "Health"])
+orderBy	select	"newest"	Sort order: newest, prize-amount, deadline, recently-added, submissions-count
+maxResults	integer	100	Maximum number of hackathons to return
+maxRequestRetries	integer	3	Retry attempts for failed API requests (advanced)
+Theme values
+
+Devpost theme names include (but are not limited to):
+
+Machine Learning/AI
+Health
+Fintech
+Social Good
+Cybersecurity
+Beginner Friendly
+Web
+Mobile
+Open Ended
+Design
+Productivity
+Low/No Code
+Blockchain
+Output example
+
+{
+  "id": 29377,
+  "title": "Build with MeDo Hackathon",
+  "url": "https://medo.devpost.com/",
+  "organizationName": "Baidu",
+  "location": "Online",
+  "openState": "open",
+  "thumbnailUrl": "https://d112y698adiu2z.cloudfront.net/photos/production/challenge_thumbnails/004/516/528/datas/medium_square.png",
+  "submissionPeriodDates": "Apr 09 - May 20, 2026",
+  "timeLeftToSubmission": "19 days left",
+  "themes": ["Beginner Friendly", "Low/No Code", "Machine Learning/AI"],
+  "prizeAmount": "$50,000",
+  "cashPrizesCount": 10,
+  "otherPrizesCount": 1,
+  "registrationsCount": 5159,
+  "featured": false,
+  "winnersAnnounced": false,
+  "inviteOnly": false,
+  "submissionGalleryUrl": "https://medo.devpost.com/project-gallery"
+}
+
+How much does it cost to scrape Devpost hackathons?
+
+The actor uses Pay-Per-Event (PPE) pricing — you only pay for what you extract.
+
+Tier	Per hackathon	Run start (one-time)
+Free plan	$0.0012	$0.005
+Starter ($29/mo)	$0.001	$0.005
+Scale ($199/mo)	$0.00078	$0.005
+Business ($999/mo)	$0.0006	$0.005
+Example costs (Starter tier / BRONZE):
+
+🟢 20 hackathons (typical search): ~$0.025 total
+🟡 100 hackathons (open hackathons snapshot): ~$0.105 total
+🔵 500 hackathons (weekly monitoring): ~$0.505 total
+A typical run of 100 hackathons costs around $0.105 — less than a coffee. The Apify Free plan gives you $5/month of free usage, covering roughly 4,100 hackathon records per month at no cost.
+
+Tips and best practices
+
+💡 Use the status: open filter for ongoing hackathons — this keeps the result set small and relevant.
+
+💡 Combine theme filters with a broad keyword search to get very targeted results. For example, themes: ["Health", "Machine Learning/AI"] with searchQuery: "" surfaces only healthcare-AI competitions.
+
+💡 Sort by deadline to surface the most time-sensitive opportunities first — great for building a "hackathons closing soon" digest.
+
+💡 Set maxResults: 0 to use the default (100 items). For a full catalog snapshot, set it to 5000+.
+
+💡 Schedule the actor daily using Apify's scheduler to keep a fresh hackathon database without manual runs.
+
+💡 Use the Apify API or Webhooks to trigger downstream automation — push results to Airtable, send Slack alerts, or email a digest whenever new hackathons appear.
+
+Integrations
+
+🗓️ Hackathon discovery newsletter
+
+Workflow: Schedule actor weekly → filter status: open, orderBy: newest → push results to Airtable → send digest email via SendGrid.
+
+🤖 Slack bot for developer teams
+
+Workflow: Schedule actor daily → filter by themes: ["Machine Learning/AI"] → compare with yesterday's dataset in Apify Key-Value Store → post new hackathons to #dev-events Slack channel via webhook.
+
+📊 Airtable hackathon tracker
+
+Workflow: Run actor → use Apify's built-in Airtable integration → automatically populate a base with prize, dates, and registration data for team decision-making.
+
+🔗 Zapier / Make automation
+
+Connect the actor's webhook to any Zapier or Make scenario. Trigger actions when new high-prize hackathons are found, or sync results to Google Sheets for easy sharing.
+
+API usage
+
+Node.js (Apify SDK)
+
+import { ApifyClient } from 'apify-client';
+
+const client = new ApifyClient({ token: 'YOUR_APIFY_TOKEN' });
+
+const run = await client.actor('automation-lab/devpost-scraper').call({
+    searchQuery: 'AI',
+    status: 'open',
+    maxResults: 50,
+    orderBy: 'prize-amount',
+});
+
+const { items } = await client.dataset(run.defaultDatasetId).listItems();
+console.log(`Got ${items.length} hackathons`);
+console.log(items[0].title, items[0].prizeAmount);
+
+Python
+
+from apify_client import ApifyClient
+
+client = ApifyClient("YOUR_APIFY_TOKEN")
+
+run = client.actor("automation-lab/devpost-scraper").call(run_input={
+    "searchQuery": "health",
+    "status": "open",
+    "maxResults": 100,
+    "themes": ["Health", "Machine Learning/AI"],
+})
+
+items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+print(f"Got {len(items)} hackathons")
+for item in items[:3]:
+    print(item["title"], item["prizeAmount"])
+
+cURL
+
+# Start a run
+curl -X POST \
+  "https://api.apify.com/v2/acts/automation-lab~devpost-scraper/runs?token=YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"searchQuery":"blockchain","maxResults":50,"status":"open"}'
+
+# Get dataset items (replace DATASET_ID from run response)
+curl "https://api.apify.com/v2/datasets/DATASET_ID/items?token=YOUR_TOKEN&format=json"
+
+Using with MCP (Claude, Cursor, VS Code)
+
+Use this actor directly from Claude Code, Claude Desktop, Cursor, or VS Code via the Apify MCP server:
+
+Claude Code
+
+claude mcp add --transport http apify "https://mcp.apify.com?tools=automation-lab/devpost-scraper"
+
+Claude Desktop / Cursor / VS Code
+
+Add to your MCP config:
+
+{
+  "mcpServers": {
+    "apify": {
+      "type": "http",
+      "url": "https://mcp.apify.com?tools=automation-lab/devpost-scraper",
+      "headers": {
+        "Authorization": "Bearer YOUR_APIFY_TOKEN"
+      }
+    }
+  }
+}
+
+Example prompts for Claude
+
+"Find all open AI hackathons on Devpost with prizes over $10,000"
+"List the 20 hackathons with the nearest deadlines and export to CSV"
+"Get me all health-themed hackathons this month and format them as a Notion table"
+"Scrape 50 blockchain hackathons and tell me which have the most registrations"
+How the scraper works
+
+The actor calls Devpost's public REST API at https://devpost.com/api/hackathons — the same JSON endpoint the Devpost website uses to render its listing pages. No browser is launched, no JavaScript rendering required.
+
+Build query parameters from your input — keyword, challenge type, status, themes, and sort order
+Fetch page 1 and read meta.total_count to know how many results are available
+Paginate through pages (48 results per page) until maxResults is reached
+Transform each result — strip HTML from prize amounts, normalize thumbnail URLs to https://, flatten theme objects to name arrays
+Push to dataset and charge PPE events
+The entire process is HTTP-only (no Playwright), runs in 256 MB memory, and typically completes in under 10 seconds for 100 results.
+
+Legality and terms of service
+
+This actor accesses Devpost's public API (devpost.com/api/hackathons) — the same endpoint that powers the Devpost website itself. All data collected is publicly available without authentication. No login credentials are required, and the actor does not circumvent any access controls.
+
+Devpost's Terms of Service permit viewing and accessing public content. Commercial use of scraped data is subject to your own legal review. The actor is intended for legitimate use cases: research, market analysis, hackathon discovery, and developer tooling. Rate limiting is respected by default — the actor paginates at natural API page boundaries.
+
+FAQ
+
+Q: How often is the Devpost data updated? A: The actor fetches live data from the Devpost API on each run. There is no caching — results reflect the current state of Devpost at the time of the run.
+
+Q: Can I get past hackathons (ended ones)? A: Yes. Set status: ended (or status: all) to include completed hackathons. Devpost has 13,000+ total competitions on record.
+
+Q: Why does my themed filter return fewer results than expected? A: Theme filters are strict — the hackathon must be tagged with ALL the themes you specify. Try filtering with a single theme at a time, or combine a broad theme with a keyword search.
+
+Q: The actor returned fewer items than my maxResults — is something broken? A: No. If the API has fewer matching hackathons than your maxResults target, the actor returns all available results. This is normal, especially with narrow filters.
+
+Q: Can I get more data per hackathon (full description, rules, judging criteria)? A: The actor uses the Devpost list API which returns summary data per hackathon. Detailed fields like full description and rules are on each hackathon's detail page. Contact us if you need detail-page extraction.
+
+Q: The run succeeded but prizeAmount shows "$0" — why? A: Some hackathons offer only non-cash prizes (swag, credits, mentorship). The cashPrizesCount and otherPrizesCount fields clarify what's available.
+
+Related scrapers
+
+Looking for more developer community data? Check out these actors by Automation Lab:
+
+GitHub Repository Scraper — scrape GitHub repos, stars, topics, and contributors
+LinkedIn Profile Scraper — extract LinkedIn public profile data
+Product Hunt Scraper — scrape Product Hunt launches, votes, and makers
+You might also like
+Devpost Hackathons Scraper avatar
+Devpost Hackathons Scraper
+parseforge/devpost-hackathons-scraper
+User avatar
+ParseForge
+2
+Hackathon Calendar Tracker — Devpost Upcoming & Open Hackathons avatar
+Hackathon Calendar Tracker — Devpost Upcoming & Open Hackathons
+gochujang/hackathon-calendar-tracker
+Scrape upcoming and open hackathons from Devpost. Filter by status, prize size, theme, or keyword. Returns title, dates, prizes, location, tags, and registration link. $0.005/hackathon.
+User avatar
+Hojun Lee
+2
+Devpost Hackathon Listings Scraper avatar
+Devpost Hackathon Listings Scraper
+jungle_synthesizer/devpost-hackathon-listings-scraper
+Scrapes hackathon listings from Devpost including title, prize totals, themes, sponsors, participant counts, and submission dates. Filter by status, search query, or theme. Ideal for hackathon discovery, sponsor research, and pre-seed founder sourcing.
+User avatar
+BowTiedRaccoon
+1
+
+HA
+Hackathon Aggregator
+gabrielaxy/hackathon-aggregator
+Every active and upcoming hackathon from Devpost and ETHGlobal in one feed. Updated on demand. No API key required.
+User avatar
+Gabriel Antony Xaviour
+16
+
+PC
+Public Competition & Hackathon Finder
+deliberate_probity/public-competition-hackathon-finder
+Find public competitions and hackathons and export structured, keyword-filtered results.
+User avatar
+Shang Liu
+2
+
+HW
+Hackathon Winner & Repo Extractor
+gabrielaxy/hackathon-winner-repo-extractor
+Paste a Devpost or ETHGlobal hackathon URL — get every project's name, GitHub repo, description, and hackathon-specific notes (How it's Made, tech stack) in one structured dataset.
+User avatar
+Gabriel Antony Xaviour
+6
+S.A.L.T. (Same As Last Time) avatar
+S.A.L.T. (Same As Last Time)
+apt_frame/salt
+S.A.L.T. (Same As Last Time) detects hackathon cheating by analyzing project reuse, GitHub history, and team past submissions on Devfolio and Devpost.
+User avatar
+Ashwin Kumar Uppala
+4
+Unstop Scraper API - Hackathons, Competitions & Jobs avatar
+Unstop Scraper API - Hackathons, Competitions & Jobs
+dami_studio/unstop-scraper
+Scrape Unstop hackathons, competitions, jobs, internships and scholarships. Unstop's API accepts any filter value, even a wrong one, and quietly returns everything. This actor only allows values it has checked, so your filter really works. Organiser emails come through where given. $2.50/1k.
+User avatar
+Dami's Studio
+10
+Unstop Hackathon Scraper avatar
+Unstop Hackathon Scraper
+trusted_offshoot/unstop-hackathon-scraper
+Scrapes the latest upcoming hackathons from Unstop.com. Extracts event titles, dates, and registration links instantly. Perfect for students and developers.
+User avatar
+yash Nagar
+71
+Unstop Jobs & Internship Scraper avatar
+Unstop Jobs & Internship Scraper
+parsebird/unstop-jobs-internships-scraper
+Scrape Unstop hackathons, jobs, internships, competitions, quizzes, scholarships, workshops, and conferences. Filter by keyword or type, export structured data as JSON, CSV, or Excel.
+User avatar
+ParseBird
+26
+Product
+Apify Store
+Integrations
+Proxy
+MCP
+Crawlee
+Developers
+Documentation
+Actor templates
+API reference
+Get paid on Apify
+Consulting
+Professional Services
+Apify Partners
+Resources
+Help & support
+Submit your ideas
+Forum
+Agent interface
+Spotlight
+APIs
+What is web scraping?
+Best web scraping tools
+Python web scraping libraries
+Scrapers
+Company
+About Apify
+Contact us
+Events
+Blog
+Jobs
+We're hiring!
+Brand
+Apify logo
+Socials
+Security
+GDPR image
+SOC2 image
+Reviews
+GetApp Apify user reviews image
+Software Advice Apify reviews image
+Capterra Apify user reviews image
+G2 Apify user reviews image
+TrustRadius Apify user reviews image
+Crozdesk Apify user reviews image
+All systems operational
+Imprint
+Terms of use
+Privacy policy
+Cookie policy
+Cookie settings
+© 2026 Apify
+Devpost Hackathon Scraper — Prizes, Themes & Deadlines · Apify
+
+
+yogic_router avatar
+Mark
+Personal
+
+Search...
+K
+
+Apify Store
+Dashboard
+Actors
+Runs
+Tasks
+Integrations
+Schedules
+Development
+My Actors
+Insights
+Messaging
+Proxy
+Storage
+Billing
+Settings
+RAM
+0 MB
+/
+16 GB
+Usage
+$3.08
+/
+$5.00
+
+Upgrade to
+Starter
+
+
+
+Devpost Hackathon Scraper avatar
+Devpost Hackathon Scraper
+from $1.20 / 1,000 hackathon extracted
+Limited permissions
+Start
+Save as a new task
+API
+
+automation-lab/devpost-scraper
+
+Crafted by
+automation-lab avatar
+Stas Persiianenko
+Devpost Hackathon Scraper avatar
+Devpost Hackathon Scraper
+
+from $1.20 / 1,000 hackathon extracted
+automation-lab/devpost-scraper
+
+Crafted by
+automation-lab avatar
+Stas Persiianenko
+Start
+API
+
+Input
+Runs
+2
+Builds
+3
+Integrations
+0
+Monitoring
+Tasks
+0
+View Actor info
+
+Form
+
+JSON
+Scrape hackathons, prizes, themes, and deadlines from Devpost — the world's largest hackathon platform with 13,000+ competitions.
+
+
+🎯 Search & filters
+Define which hackathons to collect.
+
+🔍 Search query
+
+Challenge type
+All types
+
+
+
+Status
+All statuses
+
+
+
+Themes
+Add
+Bulk edit
+Remove empty fields
+Sort order
+Newest
+
+
+
+⚙️ Limits
+Control output size and cost.
+
+Max results
+
+
+
+🔧 Advanced
+Advanced settings for reliability.
+
+Max request retries
+
+
+
+Run options
+MAXIMUM COST PER RUN
+Unlimited
+BUILD
+latest
+TIMEOUT
+300s
+MEMORY
+256 MB
+Actor running slowly or crashing? Try more memory.
+
+Build
+latest
+
+
+Timeout
+
+seconds
+
+
+No timeout
+
+
+Memory
+256 MB
+
+
+Maximum cost per run
+(optional)
+
+USD
+
+
+
+
+No maximum limit
+Start
+Save
+Restore example input
+
+These settings only apply to Actor runs started from Apify Console. Learn how to provide input when starting the Actor via the API.
+
+
+OUTPUT: 
+  {
+    "id": 3133,
+    "title": "Photo Hack Day 4",
+    "url": "https://photohackday.devpost.com/",
+    "organizationName": "",
+    "location": "Colonia Nova",
+    "openState": "ended",
+    "submissionPeriodDates": "Nov 28 - 29, 2015",
+    "timeLeftToSubmission": "Ended",
+    "themes": [],
+    "prizeAmount": "€32,419",
+    "cashPrizesCount": 17,
+    "otherPrizesCount": 0,
+    "registrationsCount": 28,
+    "featured": false,
+    "winnersAnnounced": true,
+    "inviteOnly": false,
+    "thumbnailUrl": "https://d112y698adiu2z.cloudfront.net/photos/production/challenge_thumbnails/000/315/259/datas/medium_square.png",
+    "submissionGalleryUrl": "https://photohackday.devpost.com/project-gallery"
+  }...........
+
+
+
+
+yogic_router avatar
+Mark
+Personal
+
+Search...
+K
+
+Apify Store
+Dashboard
+Actors
+Runs
+Tasks
+Integrations
+Schedules
+Development
+My Actors
+Insights
+Messaging
+Proxy
+Storage
+Billing
+Settings
+RAM
+0 MB
+/
+16 GB
+Usage
+$3.11
+/
+$5.00
+
+Upgrade to
+Starter
+
+
+
+Event Scraper Pro avatar
+Event Scraper Pro
+Pay per event
+Limited permissions
+Save & start
+Save as a new task
+API
+
+webdatalabs/event-scraper-pro
+
+Crafted by
+webdatalabs avatar
+WebDataLabs
+Event Scraper Pro avatar
+Event Scraper Pro
+
+Pay per event
+webdatalabs/event-scraper-pro
+
+Crafted by
+webdatalabs avatar
+WebDataLabs
+Save & start
+API
+
+Input
+Runs
+0
+Builds
+29
+Integrations
+0
+Monitoring
+Tasks
+0
+View Actor info
+
+Form
+
+JSON
+Keywords
+1
+
+
+2
+
+
+Add
+Bulk edit
+Remove empty fields
+Cities
+1
+
+
+Add
+Bulk edit
+Remove empty fields
+Country
+Germany
+
+
+Platforms
+Meetup (RSVP counts + organizer)
+
+Lu.ma (guest counts, city-centric)
+
+Eventbrite (browser + residential; no RSVP/price, organizer link only)
+
+
+
+
+Date From
+
+Date To
+
+Filters
+Narrow down which events end up in your results.
+
+Include online events
+
+
+Minimum attendees
+
+RSVPs
+
+
+Include free events
+
+
+Include paid events
+
+
+Max results per platform
+
+events
+
+
+Output & Integrations
+Delivery options and re-run behaviour.
+
+Only new events (incremental)
+
+
+Generate calendar (.ics) file
+
+
+Webhook URL
+
+Webhook headers
+1
+{}
+
+
+
+Advanced
+Proxy configuration
+Reset to defaults
+
+Datacenter
+
+Residential
+
+Special
+
+Own proxies
+
+No proxy
+Fastest and most affordable way to scrape data. This type of proxy has a higher chance of being blocked by anti-scraping tools. Learn more
+
+Proxy country
+Anywhere (recommended)
+
+
+Need more proxies?
+Upgrade now
+Run options
+MAXIMUM COST PER RUN
+Unlimited
+BUILD
+latest
+TIMEOUT
+3,600s
+MEMORY
+2 GB
+Actor running slowly or crashing? Try more memory.
+
+Build
+latest
+
+
+Timeout
+
+seconds
+
+
+No timeout
+
+
+Memory
+2 GB
+
+
+Maximum cost per run
+(optional)
+
+USD
+
+
+
+
+No maximum limit
+Save & start
+Save
+Cancel changes
+
+These settings only apply to Actor runs started from Apify Console. Learn how to provide input when starting the Actor via the API.
+
+
+Event Scraper Pro — Meetup, Lu.ma & Eventbrite in one dataset
+
+Search Meetup, Lu.ma, and Eventbrite for upcoming events in the cities and topics you care about, and get one clean, unified, deduplicated dataset — with RSVP/guest counts, organizer info, venue + geo, dates, and ticket status.
+
+Every column in the output is a column at least one platform actually publishes — see the capability matrix for exactly which.
+
+Built for event discovery, lead generation, community outreach, and market research.
+
+What you get
+
+One row per event, normalized across all three platforms:
+
+{
+  "platform": "meetup",
+  "title": "#37 AI Series: Stanford University — S. Sanborn",
+  "startsAt": "2026-07-15T17:00:00.000Z",
+  "timezone": "Europe/Berlin",
+  "isOnline": false,
+  "venueName": "C130, Institut für Chemie, Technische Universität Berlin",
+  "address": "Chemiegebäude, Str. des 17. Juni 115, 10623 Berlin",
+  "city": "Berlin",
+  "country": "DE",
+  "latitude": null,
+  "longitude": null,
+  "rsvpCount": 196,
+  "capacity": 250,
+  "organizerName": "BLISS AI Speaker Series 2026",
+  "organizerUrl": "https://www.meetup.com/bliss-speaker-series",
+  "ticketStatus": "free",
+  "currency": null,
+  "priceMin": null,
+  "topics": ["Ai", "Machine Learning"],
+  "category": "AI",
+  "coverImageUrl": "https://secure.meetupstatic.com/photos/event/...",
+  "eventUrl": "https://www.meetup.com/.../events/12345"
+}
+
+(This event is free, so priceMin/currency are null and ticketStatus is "free" — we never write a fake 0. Meetup publishes a street address but no coordinates, hence latitude/longitude are null. See the matrix below.)
+
+Honest capability matrix
+
+We only fill a field when the source actually exposes it. A ❌ below means null by design, not a scraper bug — so you can trust every non-null value. There is no field on this Actor that is null for everybody: anything no platform publishes has been removed from the schema rather than shipped as a permanently empty column.
+
+Field	Meetup	Lu.ma	Eventbrite
+Title, date, URL, cover image	✅	✅	✅
+Venue name + street address	✅	❌ (hidden until you register)	✅
+Latitude / longitude	❌ (address only)	✅	✅
+City / country	✅	✅	✅
+End time	❌ (start only)	✅	✅
+RSVP / guest count	✅	✅	❌ (not public)
+Organizer name	✅	✅	❌ (search exposes only an id)
+Organizer page link	✅	✅	✅
+Capacity	✅ (when capped)	❌ (never set in listing)	❌ (not in search)
+Ticket price / currency	✅ (when paid)	✅ (when paid)	❌ (not in search)
+Ticket status (free / paid / sold out)	✅	✅	❌ (reported as unknown)
+Description text	✅	❌ (not in listing)	✅
+Free events have no price, and we say so. priceMin and currency are null for free events — never 0, which would be indistinguishable from a genuinely free ticket. Use ticketStatus as the free/paid flag: free, on_sale, sold_out, or unknown. Likewise capacity is null when the organizer set no attendee limit, and rsvpCount of 0 means zero sign-ups so far — a real number, not a gap.
+
+Why Eventbrite is thinner: we re-verified Eventbrite's public search end to end (its embedded search JSON, the page's JSON-LD, and the rendered result cards). It returns no RSVP counts, no organizer names, no ticket prices and no capacity — no scraper can extract what the source doesn't serve. You still get title, venue, geo + coordinates, category, description summary, links, and a working organizer page link built from the organizer id the search does return. Add Meetup/Lu.ma to the same run for the audience, organizer-name and pricing signals.
+
+Eventbrite runs a browser + residential: Eventbrite's public search renders in a real browser and is reliable only over a residential proxy, so the Actor automatically routes only Eventbrite through residential (Meetup and Lu.ma stay on fast, cheap HTTP). All three are on by default; a full run finishes well under 5 minutes. Eventbrite is a bit slower and uses residential bandwidth — deselect it in Platforms for the fastest, cheapest runs.
+
+How it works & reliability
+
+Meetup & Lu.ma are HTTP — both serve their data as JSON/SSR, so the default run needs no browser and is fast and cheap. Eventbrite (optional) renders in a headless browser over a residential proxy for reliable access.
+Deduplication before billing — exact + fuzzy cross-platform matching removes duplicates before any event is written or charged. You never pay for a duplicate.
+Honest run status — every run writes an OUTPUT record to the Key-Value Store with a per-platform status (ok / empty / blocked). The run only fails loudly if every selected platform is blocked, or if it ran out of time before finding anything; a platform that reached its source but found no matches is a valid empty result, not a failure.
+Honest coverage, never a silent partial — each platform runs one search per keyword x city. If a run stops before searching all of them, the run says so in its status message and in OUTPUT, listing exactly which keywords/cities were never searched (requestsPlanned, requestsCompleted, truncationReason, notSearched). A run is never reported as complete when it is not.
+"Max results per platform" is a hard cap — the run stops the moment it is reached, so you are never charged past the limit you set. Because each Eventbrite search returns ~20 events, a cap of 50 is met after ~3 searches: raise the cap if you want broad keyword/city coverage, lower it to keep runs small.
+Proxy — Apify Datacenter by default for Meetup/Lu.ma; Eventbrite always uses residential automatically. Switch the whole run to Residential only if Meetup/Lu.ma start blocking.
+Input
+
+Field	Description
+Keywords (required)	Topics to match, e.g. ["ai", "startup"]
+Cities (required)	e.g. ["Berlin", "Munich"]
+Country	Country the cities are in (builds the correct URLs)
+Platforms	Any of Meetup / Lu.ma / Eventbrite
+Date From / To	YYYY-MM-DD; defaults to today → +1 month
+Max results per platform	Hard cap per platform (default 50). The run stops when it is hit — see the coverage note above
+Filters	Online-only, min attendees, free/paid
+Output	.ics calendar, webhook (n8n/Zapier/Make), incremental "only new events"
+Common use cases
+
+Lead gen: find Meetup/Lu.ma organizers running well-attended events in your niche (sort by rsvpCount, use organizerName + organizerUrl). Eventbrite rows carry an organizerUrl too, so you can still reach the organizer's page there.
+Market research: track how many and what kind of events run in a city/topic over time.
+Community/newsletter curation: pull upcoming events, export the .ics, or push to n8n via webhook.
+Notes & limits
+
+City scope follows each platform's own geo-scoping. Results include the whole metro area (a "New York" search returns Brooklyn, Queens, etc.). For a US state that shares its name with its main city (e.g. New York), Eventbrite scopes to the state, so some far-flung events may appear — filter by latitude/longitude downstream if you need a tight radius.
+Lu.ma is city-centric — coverage is strongest in cities with an active Lu.ma scene; a sparse city can legitimately return few or zero Lu.ma events.
+Eventbrite has a 180-second budget. It is the only browser-based platform, and the budget is what keeps a full three-platform run comfortably under 5 minutes. Measured throughput is roughly 12-16 keyword x city searches (~150-250 events) per run — so if you queue, say, 11 keywords x 3 cities = 33 searches, Eventbrite will finish part of them and the run will tell you exactly which ones it skipped (notSearched in OUTPUT). Searches are interleaved across cities, so a partial run still reaches every city you asked for; which keywords make the cut is not guaranteed to follow your input order, so if you need specific keywords covered, run them in a smaller query. For complete Eventbrite coverage keep the combinations under ~12, or split the query across several runs.
+Dates/timezones are normalized to ISO 8601 UTC (startsAt), with the original IANA timezone kept.
+Scraped text is treated as untrusted and never executed; only publicly available data is collected.
+Compliance: This Actor is an independent tool and is not affiliated with or endorsed by Meetup, Lu.ma, or Eventbrite; all product names and trademarks belong to their respective owners. You are responsible for using the collected data in line with applicable laws and each platform's terms.
+
+
+
+Scholarships, Competitions & Internships Extractor
+
+yogic_router avatar
+Mark
+Personal
+
+Search...
+K
+
+Apify Store
+Dashboard
+Actors
+Runs
+Tasks
+Integrations
+Schedules
+Development
+My Actors
+Insights
+Messaging
+Proxy
+Storage
+Billing
+Settings
+RAM
+0 MB
+/
+16 GB
+Usage
+$3.11
+/
+$5.00
+
+Upgrade to
+Starter
+
+
+Scholarships, Competitions & Internships Extractor avatar
+Scholarships, Competitions & Internships Extractor
+Use Actor
+Apify Store
+Scholarships, Competitions & Internships Extractor
+Scholarships, Competitions & Internships Extractor
+
+saadithya/scholarships-competitions-internships-extractor
+Use Actor
+
+A production-ready Apify Actor that automatically extracts structured information from RSS feeds about scholarships, competitions, internships, and challenges across 11 different categories.
+Pricing
+from $0.05 / result
+Rating
+0.0
+(0)
+Developer
+Aadhithya
+Aadhithya
+Maintained by Community
+Actor stats
+0
+Bookmarked
+18
+Total users
+0
+Monthly active users
+6 months ago
+Last modified
+Categories
+AI
+Agents
+Automation
+Security
+Limited permissions
+Build
+latest
+Share
+Readme
+Input
+Output
+Pricing
+Issues
+Reviews
+API
+A production-ready Apify Actor that automatically extracts structured information from RSS feeds about scholarships, competitions, internships, and challenges across 11 different categories.
+
+🎯 What This Actor Does
+
+This Actor reads RSS feeds from Givemechallenge.com and extracts:
+
+Title - Challenge/competition name
+Description - Cleaned and summarized description
+Deadline - Application deadline (normalized to YYYY-MM-DD format)
+Awards - Prize money, grants, or scholarships
+Challenge Link - Direct link to apply/participate
+Category - The category of the challenge
+📋 Supported Categories
+
+App Challenge
+Design Challenge
+Fellowships
+Ideation Challenge
+Internships
+Music and Art Challenge
+Photography Challenge
+Poetry Competition
+Scholarships
+Video Challenge
+Writing Challenge
+🚀 Quick Start
+
+Using Apify Console
+
+Go to Apify Console
+Search for saadithya/scholarships-competitions-internships-extractor
+Click "Run"
+Configure input:
+{
+  "category": "Scholarships",
+  "maxItems": 20
+}
+
+Click "Start"
+Using Apify API
+
+curl -X POST \
+  https://api.apify.com/v2/acts/saadithya~scholarships-competitions-internships-extractor/runs \
+  -H 'Authorization: Bearer YOUR_API_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "category": "Internships",
+    "maxItems": 20
+  }'
+
+Using Node.js Apify Client
+
+const { ApifyClient } = require('apify-client');
+
+const client = new ApifyClient({
+  token: 'YOUR_API_TOKEN',
+});
+
+const runInput = {
+  category: 'Scholarships',
+  maxItems: 10,
+};
+
+const run = await client.actor('saadithya~scholarships-competitions-internships-extractor').call(runInput);
+
+// Get results
+const items = await client.dataset(run.defaultDatasetId).listItems();
+console.log(`Found ${items.count} items`);
+items.items.forEach(item => {
+  console.log(`${item.title} - Deadline: ${item.deadline}, Awards: ${item.awards}`);
+});
+
+Using Python Apify Client
+
+from apify_client import ApifyClient
+
+client = ApifyClient(token='YOUR_API_TOKEN')
+
+run_input = {
+    "category": "Ideation Challenge",
+    "maxItems": 20
+}
+
+run = client.actor("saadithya~scholarships-competitions-internships-extractor").call(run_input)
+
+for item in client.dataset(run["defaultDatasetId"]).list_items().items:
+    print(f"{item.title} - Deadline: {item.deadline}, Awards: {item.awards}")
+
+📥 Input Parameters
+
+category (Required)
+
+Type: String (enum dropdown)
+Description: Select the category of challenges to extract
+
+Options:
+
+App Challenge
+Design Challenge
+Fellowships
+Ideation Challenge
+Internships
+Music and Art Challenge
+Photography Challenge
+Poetry Competition
+Scholarships
+Video Challenge
+Writing Challenge
+deadlineAfter (Optional)
+
+Type: String (YYYY-MM-DD format)
+Default: Not set
+Description: Only return challenges with deadlines AFTER this date
+
+Example:
+
+{
+  "category": "Scholarships",
+  "deadlineAfter": "2026-06-01"
+}
+
+maxItems (Optional)
+
+Type: Integer
+Default: 20
+Range: 1-100
+Description: Maximum number of results to return
+
+Example:
+
+{
+  "category": "Internships",
+  "maxItems": 50
+}
+
+testMode (Optional)
+
+Type: Boolean
+Default: false
+Description: If enabled, returns a mock item for testing purposes
+
+Example:
+
+{
+  "category": "App Challenge",
+  "testMode": true
+}
+
+📤 Output Format
+
+Each extracted item is pushed to the Apify dataset with this structure:
+
+{
+  "title": "Mastercard Foundation and ASU Graduate Scholarships for Africans",
+  "description": "Are you an African student looking to pursue a graduate degree? The Mastercard Foundation Scholars Program at Arizona State University provides comprehensive support...",
+  "deadline": "2026-05-15",
+  "awards": "$869,000",
+  "challengeLink": "https://www.mastercardfdn.org/scholarships/",
+  "category": "Scholarships"
+}
+
+💡 Usage Examples
+
+Example 1: Find Upcoming Scholarship Deadlines
+
+{
+  "category": "Scholarships",
+  "deadlineAfter": "2026-06-01",
+  "maxItems": 50
+}
+
+Example 2: Get All Available Internships
+
+{
+  "category": "Internships",
+  "maxItems": 100
+}
+
+Example 3: Test the Actor
+
+{
+  "category": "App Challenge",
+  "testMode": true
+}
+
+Example 4: Extract Latest Design Challenges
+
+{
+  "category": "Design Challenge",
+  "maxItems": 10
+}
+
+🔧 Technical Details
+
+How It Works
+
+RSS Feed Fetching: Uses the rss-parser library to fetch and parse RSS feeds from Feedburner URLs
+Data Extraction:
+Deadline: Searches for patterns like "Deadline:- DD-MM-YYYY", "Deadline: March 15, 2026"
+Awards: Extracts from "Awards:- $X,XXX" or similar patterns
+Challenge Link: Finds anchor tags with "Take this challenge", "Apply Now", etc.
+Data Cleaning: Removes HTML tags, normalizes whitespace, truncates long descriptions
+Filtering: Applies deadline and maxItems filters
+Output: Pushes structured data to Apify dataset
+Date Normalization
+
+The Actor handles multiple date formats:
+
+DD-MM-YYYY (e.g., 09-04-2026 → 2026-04-09)
+MM-DD-YYYY (e.g., 04-09-2026 → 2026-04-09)
+Text formats (e.g., March 15, 2026 → 2026-03-15)
+ISO formats (e.g., 2026-03-15 → 2026-03-15)
+All dates are normalized to YYYY-MM-DD format.
+
+Error Handling
+
+RSS Parse Failures: Logs warnings and continues with empty results
+Item Processing Errors: Skips problematic items without crashing
+Missing Fields: Uses fallback values ("Not specified")
+Invalid Input: Validates input and exits gracefully
+⚙️ Configuration
+
+Timeout
+
+Default: 300 seconds (5 minutes)
+Recommended: Keep as is for most use cases
+
+Memory
+
+Default: 1024 MB
+Recommended: Increase to 2048 MB if processing >100 items
+
+📊 Result Formats
+
+Results can be downloaded in multiple formats from Apify Console:
+
+JSON
+JSONL
+CSV
+Excel (XLSX)
+XML
+HTML
+🔍 Troubleshooting
+
+No Results Returned
+
+Verify the RSS feed is accessible
+Check if category is correctly selected
+Try increasing maxItems
+Test with testMode: true first
+Missing Deadlines or Awards
+
+Not all RSS items contain this information
+The Actor extracts when available in the content
+Check the raw RSS content to verify data exists
+Build Fails
+
+Ensure all dependencies are in package.json
+Verify Node.js version compatibility
+Review build logs in Apify Console
+Timeout Issues
+
+Increase timeout in Actor settings (max 900 seconds)
+Reduce maxItems parameter
+Check network connectivity to RSS feeds
+🌟 Use Cases
+
+Job Boards: Automatically aggregate internship opportunities
+Educational Platforms: Track scholarship deadlines for students
+Innovation Hubs: Monitor competition landscapes
+Career Services: Provide students with latest opportunities
+Research Institutions: Track fellowship opportunities
+Media Outlets: Curate challenge listings for audiences
+📈 Scheduling
+
+Set up automated runs in Apify Console:
+
+Go to Actor page → "Schedules" tab
+Click "Create schedule"
+Set frequency (daily, weekly, etc.)
+Configure input parameters
+Save and activate
+🔔 Webhooks
+
+Configure webhooks to get notified when runs complete:
+
+Go to Actor page → "Webhooks" tab
+Click "Add webhook"
+Configure:
+Event types: ACTOR.RUN.SUCCEEDED, ACTOR.RUN.FAILED
+Request URL: Your endpoint
+Payload template: Custom JSON
+📝 Version History
+
+v1.0.0
+
+Initial release
+Support for 11 challenge categories
+Advanced deadline and awards extraction
+HTML cleaning and text normalization
+Comprehensive error handling
+🤝 Support
+
+Documentation: Apify Docs
+Community: Apify Forum
+Issues: Report via Apify Console
+API Reference: Apify API Docs
+📄 License
+
+ISC
+
+👨‍💻 Author
+
+saadithya
+
+Ready to extract opportunities? Start using the Scholarships, Competitions & Internships Extractor now! 🚀
+
+For questions or custom features, reach out via Apify Console.
+
+You might also like
+Polymarket Prediction Market Tracker by Category avatar
+Polymarket Prediction Market Tracker by Category
+scrapemint/polymarket-market-monitor
+Pull Polymarket prediction markets by category, keyword, min volume, liquidity, and price move. Returns deduped JSON with question, outcomes, prices, 24h volume, and end date. Uses the official Polymarket Gamma API.
+User avatar
+Ken M
+217
+Sports Odds Scraper: NFL, NBA, MLB & Soccer Lines avatar
+Sports Odds Scraper: NFL, NBA, MLB & Soccer Lines
+scrapemint/sports-odds-scraper
+Pregame odds for NFL, NBA, WNBA, MLB, NHL, UFC, college and top soccer leagues: moneyline, spread and total per game in one normalized schema, American or decimal format. Keyless public feed, no proxy, no browser. One row per game, pay per row.
+User avatar
+Ken M
+613
+4.8
+(4)
+DraftKings Odds API - Real-Time Lines & Player Props avatar
+DraftKings Odds API - Real-Time Lines & Player Props
+zen-studio/draftkings-odds
+Extract real-time DraftKings sportsbook odds for 11 sports and 43+ leagues. Get spreads, moneylines, totals, player props, and futures in 3 odds formats. Always-on HTTP API. Live in-play odds with scores. NBA, NFL, MLB, NHL, EPL, and more. No login required.
+User avatar
+Zen Studio
+355
+wc2026-fixture | 世界杯2026赛程数据 avatar
+wc2026-fixture | 世界杯2026赛程数据
+kindly_bolt/wc2026-actors
+WC2026 fixture scraper — all 104 FIFA World Cup 2026 matches, groups & venues. Filter by team or group. JSON output. Supports English, 简体中文 & BM. Perfect for betting & fantasy apps.
+User avatar
+Benny TANG
+85
+LEI Scraper — GLEIF Legal Entity & Company Registry Data avatar
+LEI Scraper — GLEIF Legal Entity & Company Registry Data
+logiover/gleif-lei-company-registry-scraper
+Bulk-extract the global Legal Entity Identifier registry: 3.4 million legal entities with legal name, legal and headquarters address, jurisdiction, legal form, national registration number, LEI status, renewal dates and ownership links. KYC and counterparty data. No API key.
+User avatar
+Logiover
+583
+Tennis Scraper avatar
+Tennis Scraper
+crawlstone/tennis-scraper
+Extract normalized tennis data from SofaScore and Tennis Abstract, including live matches, tournaments, point-by-point records, and player statistics.
+User avatar
+Crawl Stone
+2K
+5.0
+(1)
+Unstop Jobs & Internship Scraper avatar
+Unstop Jobs & Internship Scraper
+parsebird/unstop-jobs-internships-scraper
+Scrape Unstop hackathons, jobs, internships, competitions, quizzes, scholarships, workshops, and conferences. Filter by keyword or type, export structured data as JSON, CSV, or Excel.
+User avatar
+ParseBird
+27
+The Scholarship Scraper Actor avatar
+The Scholarship Scraper Actor
+majestic_fund/the-scholarship-scraper-actor
+This Apify Actor is designed to scrape scholarship information from multiple scholarship databases and platforms.
+User avatar
+Agaba Mark
+66
+Indeed Scraper avatar
+Indeed Scraper
+misceres/indeed-scraper
+Scrape jobs posted on Indeed. Get detailed information from this job portal about saved and sponsored jobs. Specify the search based on location with the output attributes position, location, and description.
+User avatar
+Misceres
+31K
+3.0
+(67)
+AI Palmistry Agent avatar
+AI Palmistry Agent
+saadithya/ai-palmistry-analyzer
+AI Palm Reading Analyzer uses computer vision to analyze palm images and provide symbolic palmistry interpretations. Users can ask questions and receive personalized readings for entertainment purposes only, with clear disclaimers and no factual or predictive claims.
+User avatar
+Aadhithya
+39
+
+Extract structured information from RSS feeds about scholarships, competitions, and internships
+
+
+Category
+App Challenge
+
+
+
+Deadline After
+
+Max Items
+
+
+
+
+
+Scholarship Finder Scraper — 23,000+ US Scholarships, 23 Fields
+
+Scholarship Finder Scraper
+
+Extract comprehensive US scholarship data from CollegeScholarships.org — 23,000+ scholarships with 20+ fields per record.
+
+Features
+
+🎓 23,000+ scholarships from CollegeScholarships.org
+📊 20+ fields per scholarship (award min/max, deadline, eligibility, sponsor, etc.)
+🔍 Keyword search — filter by title, description, or major
+💰 Award sorting — sort by highest/lowest award or deadline
+🏷️ Min award filter — only scholarships above a threshold
+📄 Detail page enrichment — visit each scholarship's page for full data
+🚀 Fast & reliable — static HTML, no JavaScript rendering needed
+Output Fields
+
+Field	Description	Source
+title	Scholarship name	Listing
+detail_url	Full URL to scholarship page	Listing
+award	Award amount (text)	Listing
+award_amount	Award amount (numeric)	Listing
+deadline	Application deadline	Listing
+description	Scholarship description	Listing
+geographic_restrictions	Geographic eligibility	Listing
+enrollment_level	Required enrollment level	Listing
+majors	Eligible majors/fields	Listing
+min_award	Minimum award amount	Detail
+max_award	Maximum award amount	Detail
+award_type	Type (Scholarship/Grant/Fellowship)	Detail
+renewable	Whether award is renewable	Detail
+repay_required	Whether repayment is required	Detail
+unlimited_awards	Whether awards are unlimited	Detail
+enrollment_detail	Detailed enrollment requirements	Detail
+ethnicity	Ethnicity requirements	Detail
+gender	Gender requirements	Detail
+requirements	Additional requirements	Detail
+gpa	GPA requirement	Detail
+sponsor_name	Scholarship sponsor	Detail
+sponsor_url	Sponsor website	Detail
+apply_url	Direct application link	Detail
+full_description	Full description from detail page	Detail
+source	Data source identifier	—
+Input Parameters
+
+Parameter	Type	Default	Description
+keyword	String	—	Filter by keyword (e.g., "engineering", "nursing")
+maxResults	Select	100	Max results: 50/100/200/500/1000/2000/5000
+maxPages	Select	10	Max pages to scrape (30/page): 5/10/20/50/100/769
+fetchDetails	Checkbox	✓	Fetch detail pages for enriched data
+minAward	Select	—	Minimum award filter: $500-$25,000
+sortBy	Select	none	Sort: none/award_high/award_low/deadline
+Example Usage
+
+Top 100 highest-value scholarships:
+
+{
+  "maxResults": "100",
+  "maxPages": "10",
+  "fetchDetails": true,
+  "sortBy": "award_high"
+}
+
+Engineering scholarships over $5,000:
+
+{
+  "keyword": "engineering",
+  "maxResults": "200",
+  "maxPages": "20",
+  "minAward": "5000",
+  "fetchDetails": true
+}
+
+All scholarships sorted by deadline:
+
+{
+  "maxResults": "500",
+  "maxPages": "20",
+  "sortBy": "deadline",
+  "fetchDetails": false
+}
+
+How It Works
+
+Browse: Iterates through listing pages (30 scholarships/page)
+Parse: Extracts basic fields (title, award, deadline, description, eligibility)
+Enrich (optional): Visits each detail page for 13+ additional fields
+Filter: Applies keyword and minimum award filters
+Sort: Orders results by award amount or deadline
+Export: Pushes structured data to Apify dataset
+Data Source
+
+CollegeScholarships.org — One of the largest free scholarship databases
+23,000+ scholarships across all academic disciplines
+Updated regularly with new opportunities
+No registration or API key required
+Pricing
+
+$5 per 1,000 results.
+
+Why This Scraper?
+
+Feature	This Scraper	Competitors
+Fields	23+	6-15
+Detail enrichment	✅	❌ Most
+Award min/max	✅	❌
+Sponsor info	✅	❌
+Keyword filter	✅	Some
+Sort by award	✅	❌
+Data source size	23,000+	3,400-10,000
+
+
+https://github.com/PerkCommons/data/tree/main/opportunities

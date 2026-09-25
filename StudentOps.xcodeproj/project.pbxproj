@@ -6,8 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2B28F38D3061EE3C00B11221 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 6B0177B2551A4CDCAFACB2A8A51F9D5A /* RevenueCat */; };
+		2B28F38E3061EE3C00B11221 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = A0F8C1CC36304517BEC960B2256BF334 /* RevenueCatUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2BE10F2C304F958D0048404F /* StudentOps.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudentOps.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2BE10F40304F958D0048404F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +29,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B28F38E3061EE3C00B11221 /* RevenueCatUI in Frameworks */,
+				2B28F38D3061EE3C00B11221 /* RevenueCat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,6 +41,7 @@
 			isa = PBXGroup;
 			children = (
 				2BE10F2E304F958D0048404F /* StudentOps */,
+				2BE10F40304F958D0048404F /* Info.plist */,
 				2BE10F2D304F958D0048404F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,6 +74,8 @@
 			);
 			name = StudentOps;
 			packageProductDependencies = (
+				6B0177B2551A4CDCAFACB2A8A51F9D5A /* RevenueCat */,
+				A0F8C1CC36304517BEC960B2256BF334 /* RevenueCatUI */,
 			);
 			productName = StudentOps;
 			productReference = 2BE10F2C304F958D0048404F /* StudentOps.app */;
@@ -94,6 +105,9 @@
 			);
 			mainGroup = 2BE10F23304F958D0048404F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2B8DC509306058780076723A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2BE10F2D304F958D0048404F /* Products */;
 			projectDirPath = "";
@@ -256,6 +270,7 @@
 				DEVELOPMENT_TEAM = 29AT27QJJ9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -288,6 +303,7 @@
 				DEVELOPMENT_TEAM = 29AT27QJJ9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -332,6 +348,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2B8DC509306058780076723A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.90.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6B0177B2551A4CDCAFACB2A8A51F9D5A /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2B8DC509306058780076723A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
+		};
+		A0F8C1CC36304517BEC960B2256BF334 /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2B8DC509306058780076723A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2BE10F24304F958D0048404F /* Project object */;
 }

@@ -1,0 +1,17 @@
+# Server env — never commit local token
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+dist/
+
+# OS
+.DS_Store
+
+# Xcode
+DerivedData/
+*.xcuserdata
+
+# Apify temp
+.apify/
